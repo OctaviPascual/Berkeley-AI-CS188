@@ -70,7 +70,91 @@ def tinyMazeSearch(problem):
     from game import Directions
     s = Directions.SOUTH
     w = Directions.WEST
-    return  [s, s, w, s, w, w, s, w]
+    return [s, s, w, s, w, w, s, w]
+
+def buildActions(node, parent):
+    action = node[1]
+    if action is None: return []
+    return buildActions(parent[node], parent) + [action]
+
+def graphSearchWithoutCosts(problem, fringe):
+
+    # Dict to track who is the parent of each node
+    # parent[node1] = node2 means that the parent of node1 is node2
+    parent = dict()
+    # Set of closed states (states that have already been visited)
+    closed = set()
+
+    # Insert starting node into the fringe
+    # Note that a node is a tuple consisting of a state, an action and a cost
+    # node[0] = state, node[1] = action, node[2] = cost
+    start_state = problem.getStartState()
+    start_action = None
+    start_cost = 0
+    start_node = (start_state, start_action, start_cost)
+    fringe.push(start_node)
+
+    while not fringe.isEmpty():
+        node = fringe.pop()
+        state = node[0]
+
+        if problem.isGoalState(state): return buildActions(node, parent)
+
+        if state not in closed:
+            closed.add(state)
+
+            for successor in problem.getSuccessors(state):
+                successor_state = successor[0]
+
+                if successor_state not in closed:
+                    fringe.push(successor)
+                    parent[successor] = node
+
+    return []
+
+def graphSearchWithCosts(problem, heuristic):
+
+    # Dict to track who is the parent of each node
+    # parent[node1] = node2 means that the parent of node1 is node2
+    parent = {}
+    # Set of closed states (states that have already been visited)
+    closed = set()
+    # Dict to track the cost of each node
+    cost = {}
+    fringe = util.PriorityQueue()
+
+    # Insert starting node into the fringe
+    # Note that a node is a tuple consisting of a state and an action
+    # while the cost is the priority of this item
+    # node[0] = state, node[1] = action, node[2] = cost
+    start_state = problem.getStartState()
+    start_action = None
+    start_cost = 0
+    fringe.push(item=(start_state, start_action), priority=start_cost)
+    cost[start_state] = start_cost
+
+    while not fringe.isEmpty():
+        node = fringe.pop()
+        state = node[0]
+
+        if problem.isGoalState(state): return buildActions(node, parent)
+
+        if state not in closed:
+            closed.add(state)
+
+            for successor in problem.getSuccessors(state):
+                successor_state = successor[0]
+                successor_cost = successor[2]
+
+                if successor_state not in closed:
+                    g = cost[state] + successor_cost
+                    h = heuristic(successor_state, problem)
+                    # To understand why this works, check how update function acts
+                    fringe.update(successor[:2], g+h)
+                    cost[successor_state] = g
+                    parent[successor[:2]] = node
+
+    return []
 
 def depthFirstSearch(problem):
     """
@@ -87,17 +171,17 @@ def depthFirstSearch(problem):
     print "Start's successors:", problem.getSuccessors(problem.getStartState())
     """
     "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+    return graphSearchWithoutCosts(problem, util.Stack())
 
 def breadthFirstSearch(problem):
     """Search the shallowest nodes in the search tree first."""
     "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+    return graphSearchWithoutCosts(problem, util.Queue())
 
 def uniformCostSearch(problem):
     """Search the node of least total cost first."""
     "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+    return graphSearchWithCosts(problem, nullHeuristic)
 
 def nullHeuristic(state, problem=None):
     """
@@ -109,7 +193,7 @@ def nullHeuristic(state, problem=None):
 def aStarSearch(problem, heuristic=nullHeuristic):
     """Search the node that has the lowest combined cost and heuristic first."""
     "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+    return graphSearchWithCosts(problem, heuristic)
 
 
 # Abbreviations
