@@ -8,5 +8,6 @@ WORKDIR /opt/Berkeley-AI-CS188
 COPY main.py .
 COPY project0-tutorial project0-tutorial
 COPY project1-search project1-search
+COPY project2-multiagent project2-multiagent
 
 ENTRYPOINT [ "python", "main.py" ]
