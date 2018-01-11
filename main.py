@@ -4,15 +4,19 @@ import argparse
 PROJECT = {
     0: "project0-tutorial",
     1: "project1-search",
-    2: "project2-multiagent"
+    2: "project2-multiagent",
+    3: "project3-reinforcement"
 }
 
 
 def check_project(string):
-    project = int(string)
-    if 0 <= project <= 2:
+    try:
+        project = int(string)
+    except ValueError:
+        raise argparse.ArgumentTypeError("Invalid project (must be an integer)")
+    if 0 <= project <= 3:
         return project
-    raise argparse.ArgumentTypeError("Invalid project (must be in [0..2] range)")
+    raise argparse.ArgumentTypeError("Invalid project (must be in [0..3] range)")
 
 
 def run_project(i):
