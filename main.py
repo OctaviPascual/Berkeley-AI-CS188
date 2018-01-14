@@ -5,7 +5,8 @@ PROJECT = {
     0: "project0-tutorial",
     1: "project1-search",
     2: "project2-multiagent",
-    3: "project3-reinforcement"
+    3: "project3-reinforcement",
+    4: "project4-bayesNets"
 }
 
 
@@ -14,9 +15,9 @@ def check_project(string):
         project = int(string)
     except ValueError:
         raise argparse.ArgumentTypeError("Invalid project (must be an integer)")
-    if 0 <= project <= 3:
+    if 0 <= project <= 4:
         return project
-    raise argparse.ArgumentTypeError("Invalid project (must be in [0..3] range)")
+    raise argparse.ArgumentTypeError("Invalid project (must be in [0..4] range)")
 
 
 def run_project(i):
