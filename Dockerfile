@@ -11,5 +11,6 @@ COPY project1-search project1-search
 COPY project2-multiagent project2-multiagent
 COPY project3-reinforcement project3-reinforcement
 COPY project4-bayesNets project4-bayesNets
+COPY project5-tracking project5-tracking
 
 ENTRYPOINT [ "python", "main.py" ]

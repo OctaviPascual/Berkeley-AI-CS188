@@ -1,0 +1,2 @@
+python busters.py
+python -m doctest -v inference.py
