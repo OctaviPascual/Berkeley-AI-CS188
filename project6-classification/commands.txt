@@ -1,0 +1,9 @@
+python dataClassifier.py --model PerceptronModel 
+python dataClassifier.py --model PerceptronModel --data datasetA --iter 20
+python dataClassifier.py --model PerceptronModel --data datasetB --iter 20
+python dataClassifier.py --model PerceptronModel --print_features --iter 1
+python dataClassifier.py --model SoftmaxRegressionModel --data datasetA --iter 300
+python dataClassifier.py --model SoftmaxRegressionModel --data datasetB --iter 300
+python dataClassifier.py --data largeMnistDataset --feature_extractor basicFeatureExtractor --iter 1000 --learning_rate 0.01 --momentum 0.9
+python dataClassifier.py --data largeMnistDataset --feature_extractor enhancedFeatureExtractor --iter 1000 --learning_rate 0.01 --momentum 0.9
+python dataClassifier.py -m ConvNetModel -s MinibatchStochasticGradientDescentSolver --batch_size 32 --learning_rate 0.05 --momentum 0.3 --iterations 1000 --data mnistDataset

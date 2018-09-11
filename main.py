@@ -2,13 +2,13 @@ import os
 import argparse
 
 PROJECT = {
-    0: "project0-tutorial",
-    1: "project1-search",
-    2: "project2-multiagent",
-    3: "project3-reinforcement",
-    4: "project4-bayesNets",
-    5: "project5-tracking",
-    6: "project6-classification"
+    0: 'project0-tutorial',
+    1: 'project1-search',
+    2: 'project2-multiagent',
+    3: 'project3-reinforcement',
+    4: 'project4-bayesNets',
+    5: 'project5-tracking',
+    6: 'project6-classification'
 }
 
 
@@ -16,10 +16,10 @@ def check_project(string):
     try:
         project = int(string)
     except ValueError:
-        raise argparse.ArgumentTypeError("Invalid project (must be an integer)")
+        raise argparse.ArgumentTypeError('Invalid project (must be an integer)')
     if 0 <= project <= 6:
         return project
-    raise argparse.ArgumentTypeError("Invalid project (must be in [0..6] range)")
+    raise argparse.ArgumentTypeError('Invalid project (must be in [0..6] range)')
 
 
 def run_project(i):
@@ -28,7 +28,7 @@ def run_project(i):
     print '****************************** Project {} *****************************'.format(i)
     print '**********************************************************************'
     print
-    os.system("sleep 2 && cd " + PROJECT[i] + "&& python autograder.py")
+    os.system('sleep 4 && cd ' + PROJECT[i] + '&& python autograder.py')
 
 
 def main():

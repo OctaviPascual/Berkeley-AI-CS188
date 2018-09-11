@@ -80,7 +80,15 @@ class PerceptronClassifier(object):
                 if callback is not None: callback()
 
                 "*** YOUR CODE HERE ***"
-                util.raiseNotDefined()
+                f = input_train_data[i]
+                y_star = label_train_data[i]
+                y = self.classify(f)
+
+                if y_star != y: self.update_weights(y_star, y, f)
+
+    def update_weights(self, y_star, y, f):
+        self.weights[y_star] += f
+        self.weights[y] -= f
 
     def classify(self, input_datum_or_data):
         """
@@ -122,7 +130,9 @@ class PerceptronClassifier(object):
         best100Features = []
 
         "*** YOUR CODE HERE ***"
-        util.raiseNotDefined()
+        sorted_features = sorted(self.weights[label], reverse=True)
+        for i in range(100):
+            best100Features.append(sorted_features[:100])
 
         return best100Features
 

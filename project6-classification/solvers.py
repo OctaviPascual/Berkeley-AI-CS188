@@ -83,7 +83,10 @@ class GradientDescentSolver(Solver):
         grad_tensors = tf.gradients(loss_tensor, param_vars)
         updates = []
         "*** YOUR CODE HERE ***"
-        util.raiseNotDefined()
+        for i in range(len(grad_tensors)):
+            param_var = param_vars[i]
+            new_param_tensor = param_var - self.learning_rate*grad_tensors[i]
+            updates.append((param_var, new_param_tensor))
         return updates
 
     def get_updates_with_momentum(self, loss_tensor, param_vars):
@@ -108,7 +111,13 @@ class GradientDescentSolver(Solver):
         tfu.get_session().run([vel_var.initializer for vel_var in vel_vars])
         updates = []
         "*** YOUR CODE HERE ***"
-        util.raiseNotDefined()
+        for i in range(len(grad_tensors)):
+            var = param_vars[i]
+            vel_var = vel_vars[i]
+            new_vel_var = self.momentum*vel_var - self.learning_rate*grad_tensors[i]
+            new_tensor = var + new_vel_var
+            updates.append((var, new_tensor))
+            updates.append((vel_var, new_vel_var))
         return updates
 
     def get_loss_tensor(self, prediction_tensor, target_ph, param_vars):
@@ -177,9 +186,14 @@ class GradientDescentSolver(Solver):
         val_losses = []
         for iter_ in range(self.iterations):
             "*** YOUR CODE HERE ***"
-            util.raiseNotDefined()
             # train_loss should be the loss of this iteration using all of the training data
+            feed_dict = {model.input_ph: input_train_data, target_ph: target_train_data}
+            train_loss, _ = session.run([loss_tensor, update_ops], feed_dict=feed_dict)
+
             # val_loss should be the loss of this iteration using all of the validation data
+            feed_dict = {model.input_ph: input_val_data, target_ph: target_val_data}
+            val_loss = session.run(loss_tensor, feed_dict=feed_dict)
+
             train_losses.append(train_loss)
             val_losses.append(val_loss)
             if callback is not None: callback(model)
@@ -267,6 +281,8 @@ class StochasticGradientDescentSolver(GradientDescentSolver):
         val_data = [input_val_data, target_val_data]
         # You may want to initialize some variables that are shared across iterations
         "*** YOUR CODE HERE ***"
+        train_data_gen = MinibatchIndefinitelyGenerator(train_data, 1, self.shuffle)
+        val_data_gen = MinibatchIndefinitelyGenerator(val_data, 1, self.shuffle)
         loss_tensor = self.get_loss_tensor(model.prediction_tensor, target_ph, model.get_param_vars(regularizable=True))
         updates = self.get_updates(loss_tensor, model.get_param_vars(trainable=True))
         update_ops = [tf.assign(old_var, new_var_or_tensor) for (old_var, new_var_or_tensor) in updates]
@@ -274,9 +290,16 @@ class StochasticGradientDescentSolver(GradientDescentSolver):
         val_losses = []
         for iter_ in range(self.iterations):
             "*** YOUR CODE HERE ***"
-            util.raiseNotDefined()
             # train_loss should be the loss of this iteration using only the training data that was used for the updates
+            single_input_train_data, single_target_train_data = train_data_gen.next()
+            feed_dict = {model.input_ph: single_input_train_data, target_ph: single_target_train_data}
+            train_loss, _ = session.run([loss_tensor, update_ops], feed_dict=feed_dict)
+
             # val_loss should be the loss of this iteration using the same amount of data used for the updates, but using the validation data instead
+            single_val_train_data, single_target_val_data = val_data_gen.next()
+            feed_dict = {model.input_ph: single_val_train_data, target_ph: single_target_val_data}
+            val_loss = session.run(loss_tensor, feed_dict=feed_dict)
+
             train_losses.append(train_loss)
             val_losses.append(val_loss)
             if callback is not None: callback(model)
@@ -356,6 +379,8 @@ class MinibatchStochasticGradientDescentSolver(GradientDescentSolver):
         val_data = [input_val_data, target_val_data]
         # You may want to initialize some variables that are shared across iterations
         "*** YOUR CODE HERE ***"
+        train_data_gen = MinibatchIndefinitelyGenerator(train_data, self.batch_size, self.shuffle)
+        val_data_gen = MinibatchIndefinitelyGenerator(val_data, self.batch_size, self.shuffle)
         loss_tensor = self.get_loss_tensor(model.prediction_tensor, target_ph, model.get_param_vars(regularizable=True))
         updates = self.get_updates(loss_tensor, model.get_param_vars(trainable=True))
         update_ops = [tf.assign(old_var, new_var_or_tensor) for (old_var, new_var_or_tensor) in updates]
@@ -363,9 +388,16 @@ class MinibatchStochasticGradientDescentSolver(GradientDescentSolver):
         val_losses = []
         for iter_ in range(self.iterations):
             "*** YOUR CODE HERE ***"
-            util.raiseNotDefined()
             # train_loss should be the loss of this iteration using only the training data that was used for the updates
+            batch_input_train_data, batch_target_train_data = train_data_gen.next()
+            feed_dict = {model.input_ph: batch_input_train_data, target_ph: batch_target_train_data}
+            train_loss, _ = session.run([loss_tensor, update_ops], feed_dict=feed_dict)
+
             # val_loss should be the loss of this iteration using the same amount of data used for the updates, but using the validation data instead
+            batch_val_train_data, batch_target_val_data = val_data_gen.next()
+            feed_dict = {model.input_ph: batch_val_train_data, target_ph: batch_target_val_data}
+            val_loss = session.run(loss_tensor, feed_dict=feed_dict)
+
             train_losses.append(train_loss)
             val_losses.append(val_loss)
 
